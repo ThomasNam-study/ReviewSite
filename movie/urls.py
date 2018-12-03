@@ -1,5 +1,6 @@
 from django.urls import path
+from .views import search_move
 
 urlpatterns = [
-    #path('', 'view 월')
+    path('', search_move, name="search")
 ]
