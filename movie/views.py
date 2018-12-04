@@ -1,16 +1,26 @@
-from django.shortcuts import render, HttpResponse
+from django.utils import timezone
+from django.shortcuts import render, HttpResponse, redirect
 import requests
 from bs4 import BeautifulSoup as bs
 
 from .models import SearchResult, Movie
 
 # Create your views here.
-def search_move(request):
+def search_move(request, keyword=None):
 
     if request.method == "POST":
         keyword = request.POST["keyword"]
 
-        print(keyword)
+        if not keyword:
+            return redirect("search")
+
+        results = SearchResult.objects.filter(keyword=keyword).order_by('-search_date')
+
+        if results:
+            recent = results[0]
+            if recent.search_date - timezone.now() > timezone.timedelta(days=1):
+                return redirect("search-result", keyword=keyword)
+
         i = 1
 
         search_result = SearchResult.objects.create(
@@ -18,6 +28,9 @@ def search_move(request):
         )
 
         while True:
+
+            print("크롤링 시작")
+
             url = "http://www.cgv.co.kr/search/movie.aspx?query={}&page={}".format(keyword, i)
             i += 1
 
@@ -43,6 +56,14 @@ def search_move(request):
             except AttributeError as ex:
                 print(ex)
                 break
+        return redirect("search-result", keyword=keyword)
 
+    if keyword:
+        result = SearchResult.objects.filter(keyword=keyword).order_by('-search_date')
+
+        if result[0].movie_set.all():
+            return render(request, "search.html", {'result': result[0]})
+        else:
+            return render(request, "search.html", {'result': False})
 
     return render(request, "search.html")

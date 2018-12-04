@@ -5,3 +5,20 @@
     <button type="submit">전송</button>
 
 </form>
+
+
+{% if result %}
+
+    검색 키워드 : {{ result.keyword }}<br/>
+
+    {%  for movie in result.movie_set.all %}
+
+            {{ movie.name }} {{ movie.release_date }}
+
+        <img src = "{{ movie.img_url }}"/>
+
+    {% endfor %}
+
+{% else %}
+        검색 결과가 없습니다.
+        {% endif %}
