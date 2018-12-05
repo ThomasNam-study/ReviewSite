@@ -61,7 +61,7 @@ def search_move(request, keyword=None):
     if keyword:
         result = SearchResult.objects.filter(keyword=keyword).order_by('-search_date')
 
-        if result[0].movie_set.all():
+        if result and result[0].movie_set.all():
             return render(request, "search.html", {'result': result[0]})
         else:
             return render(request, "search.html", {'result': False})
