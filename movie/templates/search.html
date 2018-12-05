@@ -20,6 +20,8 @@
 
         <div class = "col-sm-6 col-md-4">
 
+        <a href = "{% url "review" movie.id %}">Review</a>
+
             <div class = "jumbotron">
                 <p>
                     <strong>{{ movie.name }}</strong> {{ movie.release_date }}

@@ -8,3 +8,6 @@ class Review(models.Model):
     content = models.TextField()
 
     movie = models.ForeignKey('movie.Movie', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{} 리뷰'.format(self.title)
